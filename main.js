@@ -1,8 +1,9 @@
-const { request } = require('express');
+const { request, response } = require('express');
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
+
 app.use(express.json())
 
 let pizzas = []
@@ -16,12 +17,11 @@ app.get('/pizzas', (request,response) => {
 
 app.post('/pizzas', (request,response) => {
     const {name,url,description,price,ingredientes} = request.body
-
+    
     const pizzaExists = pizzas.find(pizza => pizza.name === name)
-
-    if (pizzaExists){
-        return response.status(401).json({error:'Pizza já cadastrada'})
-    }
+        if (pizzaExists){
+            return response.status(401).json({error:'Pizza já cadastrada'})
+        }
 
     const pizza = {
         id: uuidv4(),
@@ -37,10 +37,17 @@ app.post('/pizzas', (request,response) => {
  })
 
 
+ app.get('/solicitations/:id', (request, response) => {
+    const {id} = request.params
+    const solicitation = orders.find(order => order.id === id)
+    if (solicitation){
+        return response.json(solicitation)
+    }
+    return response.status(404).json({error:'Pedido não encontrado'})
+ })
+
  app.get('/solicitations', (request,response) => {
-    const nameQuery = request.query.name || ""
-    const pizzasFiltered = pizzas.filter(pizza => pizza.name.toLowerCase().includes(nameQuery))
-    response.json(pizzasFiltered)
+    return response.json(orders)
 })
 
 app.post('/solicitations',(request,response) =>{
@@ -64,13 +71,10 @@ app.post('/solicitations',(request,response) =>{
         pizzas,
         observation,
         Status: 'em Producao'
-
     }
-
     orders.push(solicitation)
     response.status(201).json(solicitation)
 })
-
 
 app.listen(3333,()=> {
 console.log("App rodando na porta 3333")
