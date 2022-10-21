@@ -15,6 +15,16 @@ app.get('/pizzas', (request,response) => {
     response.json(pizzasFiltered)
 })
 
+app.delete('/pizzas/:id', (request,response) => {
+    const {id} = request.params;
+    const pizza = pizzas.find(pizza => pizza.id === id)
+    if (pizza){
+        pizzas = pizzas.filter(item => item.id !== pizza.id)
+        return response.json(pizzas)
+    }
+    return response.status(404).json({error:'Pizza não encontrada'})
+})
+
 app.post('/pizzas', (request,response) => {
     const {name,url,description,price,ingredientes} = request.body
     
@@ -75,6 +85,19 @@ app.post('/solicitations',(request,response) =>{
     orders.push(solicitation)
     response.status(201).json(solicitation)
 })
+
+app.delete('/solicitations/:id', (request,response) => {
+    const {id} = request.params;
+    const order = orders.find(order => order.id === id)
+    if (order){
+        orders = orders.filter(item => item.id !== order.id)
+        return response.json(orders)
+    }
+    return response.status(404).json({error:'Pedido não encontrada'})
+})
+
+
+
 
 app.listen(3333,()=> {
 console.log("App rodando na porta 3333")
