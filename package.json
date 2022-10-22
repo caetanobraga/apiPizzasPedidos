@@ -2,14 +2,16 @@
   "name": "primeiroprojeto",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
+  "main": "./src/index.js",
+  "type": "module",
   "scripts": {
-    "api": "npx nodemon main.js"
+    "api": "nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "nodemon": "^2.0.20"
   }
 }
