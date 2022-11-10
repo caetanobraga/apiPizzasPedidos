@@ -1,7 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
+import { createSolicitationSchema}  from '../validations/createSolictation.schema.js'
+import { getSolicitationsInFile } from '../utils/getSolicitationsInFile.js'
+import fs from 'fs'
 
 
-let orders = []
+const orders = getSolicitationsInFile();
 
 export function findSolicitation(request,response){
     const {id} = request.params
@@ -17,30 +20,37 @@ export function findAllSolicitation(request,response){
 }
 
 
-export function createSolicitation(request,response){
-    const {
-        name_client,
-        document_client,
-        contact_client,
-        address_client,
-        payment_method,
-        pizzas,
-        observation,
-    } = request.body
-    
-    const solicitation = {
-        id: uuidv4(),
-        name_client,
-        document_client,
-        contact_client,
-        address_client,
-        payment_method,
-        pizzas,
-        observation,
-        Status: 'em Producao'
+export async function createSolicitation(request,response){
+    try{
+        await createSolicitationSchema.validate(request.body)
+
+        const {
+            name_client,
+            document_client,
+            contact_client,
+            address_client,
+            payment_method,
+            itens,
+            observation,
+        } = request.body
+
+        const solicitation = {
+            id: uuidv4(),
+            name_client,
+            document_client,
+            contact_client,
+            address_client,
+            payment_method,
+            itens,
+            observation,
+            Status: 'em Producao'
+        }
+        fs.writeFileSync('orders.json', JSON.stringify([...orders,solicitation]))
+        response.status(201).json(solicitation)
+    } catch (error){
+        response.status(400).json({error: error.message})
     }
-    orders.push(solicitation)
-    response.status(201).json(solicitation)
+    
 }
 
 
@@ -54,3 +64,8 @@ export function deleteSolicitation(request,response){
     return response.status(404).json({error:'Pedido não encontrada'})
 }
 
+// export function updateStatus(request, response){
+//     request.params.id
+
+
+// }
