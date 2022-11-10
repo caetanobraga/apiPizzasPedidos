@@ -1,5 +1,4 @@
 import express from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors'
 import pizzasRoutes from './routes/pizzas.routes.js';
 import solicitationsRoutes from './routes/solicitations.routes.js';
