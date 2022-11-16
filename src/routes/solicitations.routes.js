@@ -3,7 +3,7 @@ import { findSolicitation,
     findAllSolicitation, 
     createSolicitation,
     deleteSolicitation, 
-    updateStatus} from '../controllers/solicitation.controller.js';
+    updateStatus} from '../controllers/solicitation.controller.ts';
 
 const solicitationsRoutes = Router();
 
