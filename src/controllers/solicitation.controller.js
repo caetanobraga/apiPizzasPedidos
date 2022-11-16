@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { createSolicitationSchema}  from '../validations/createSolictation.schema.js'
 import { getSolicitationsInFile } from '../utils/getSolicitationsInFile.js'
-import fs from 'fs'
+import fs, { write } from 'fs'
 
 
 const orders = getSolicitationsInFile();
@@ -43,7 +43,7 @@ export async function createSolicitation(request,response){
             payment_method,
             itens,
             observation,
-            Status: 'em Producao'
+            status: 'em Producao'
         }
         fs.writeFileSync('orders.json', JSON.stringify([...orders,solicitation]))
         response.status(201).json(solicitation)
@@ -64,8 +64,15 @@ export function deleteSolicitation(request,response){
     return response.status(404).json({error:'Pedido não encontrada'})
 }
 
-// export function updateStatus(request, response){
-//     request.params.id
+export function updateStatus(request, response){
 
+    const updatedOrders = orders.map(order => {
+        if (order.id === request.params.id){
+            order.status = 'A CAMINHO'
+        }
+        return order;
+    })
 
-// }
+    fs.writeFileSync('orders.json', JSON.stringify(updatedOrders))
+    return response.json()
+}
